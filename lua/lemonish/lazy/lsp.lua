@@ -4,6 +4,7 @@ return {
         "stevearc/conform.nvim",
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
+        "mfussenegger/nvim-jdtls",
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
@@ -12,6 +13,7 @@ return {
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
         "j-hui/fidget.nvim",
+        'numToStr/Comment.nvim',
     },
 
     config = function()
@@ -28,11 +30,70 @@ return {
             cmp_lsp.default_capabilities())
 
         require("fidget").setup({})
+
+        -- Auto format on save
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            callback = function()
+                vim.lsp.buf.format()
+            end
+        })
+
+        local cmp_select = { behavior = cmp.SelectBehavior.Select }
+
+        cmp.setup({
+            snippet = {
+                expand = function(args)
+                    require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+                end,
+            },
+            mapping = cmp.mapping.preset.insert({
+                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+                ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                ["<C-Space>"] = cmp.mapping.complete(),
+                ['<Tab>'] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_next_item()
+                    elseif require("luasnip").expand_or_jumpable() then
+                        require("luasnip").expand_or_jump()
+                    else
+                        fallback()  -- Default tab behavior
+                    end
+                end, { "i", "s" }), -- Works in insert and select mode
+                ['<S-Tab>'] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_prev_item()
+                    else
+                        fallback()  -- Default tab behavior
+                    end
+                end, { "i", "s" }), -- Works in insert and select mode
+            }),
+            sources = cmp.config.sources({
+                { name = "copilot", group_index = 2 },
+                { name = 'nvim_lsp' },
+                { name = 'luasnip' }, -- For luasnip users.
+            }, {
+                { name = 'buffer' },
+            })
+        })
+
+        vim.diagnostic.config({
+            -- update_in_insert = true,
+            float = {
+                focusable = false,
+                style = "minimal",
+                border = "rounded",
+                source = "always",
+                header = "",
+                prefix = "",
+            },
+        })
+
+        require("Comment").setup()
         require("mason").setup()
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "lua_ls",
-                "jdtls",
                 "ts_ls",
                 "html",
                 "pyright",
@@ -60,7 +121,6 @@ return {
                     })
                     vim.g.zig_fmt_parse_errors = 0
                     vim.g.zig_fmt_autosave = 0
-
                 end,
                 ["lua_ls"] = function()
                     local lspconfig = require("lspconfig")
@@ -87,7 +147,7 @@ return {
                 -- JavaScript/TypeScript LSP setup
                 ["ts_ls"] = function()
                     local lspconfig = require("lspconfig")
-                    lspconfig.tl_ls.setup({
+                    lspconfig.ts_ls.setup({
                         capabilities = capabilities,
                         settings = {
                             javascript = {
@@ -128,57 +188,6 @@ return {
                     })
                 end,
             }
-        })
-
-        local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-        cmp.setup({
-            snippet = {
-                expand = function(args)
-                    require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-                end,
-            },
-            mapping = cmp.mapping.preset.insert({
-                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-                ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-                ["<C-Space>"] = cmp.mapping.complete(),
-                ['<Tab>'] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_next_item()
-                    elseif require("luasnip").expand_or_jumpable() then
-                        require("luasnip").expand_or_jump()
-                    else
-                        fallback() -- Default tab behavior
-                    end
-                end, { "i", "s" }), -- Works in insert and select mode
-                ['<S-Tab>'] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_prev_item()
-                    else
-                        fallback() -- Default tab behavior
-                    end
-                end, { "i", "s" }), -- Works in insert and select mode
-            }),
-            sources = cmp.config.sources({
-                { name = "copilot", group_index = 2 },
-                { name = 'nvim_lsp' },
-                { name = 'luasnip' }, -- For luasnip users.
-            }, {
-                { name = 'buffer' },
-            })
-        })
-
-        vim.diagnostic.config({
-            -- update_in_insert = true,
-            float = {
-                focusable = false,
-                style = "minimal",
-                border = "rounded",
-                source = "always",
-                header = "",
-                prefix = "",
-            },
         })
     end
 }
