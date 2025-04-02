@@ -93,6 +93,7 @@ return {
         require("mason").setup()
         require("mason-lspconfig").setup({
             ensure_installed = {
+                "ruby_lsp", -- must do apt install gem and apt install ruby-dev, then do gem install ruby-lsp.
                 "lua_ls",
                 "ts_ls",
                 "html",
@@ -133,6 +134,12 @@ return {
                             }
                         }
                     }
+                end,
+                ["ruby_lsp"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.ruby_lsp.setup({
+                        capabilities = capabilities,
+                    })
                 end,
                 -- Java LSP setup
                 ["jdtls"] = function()
@@ -189,3 +196,4 @@ return {
         })
     end
 }
+
