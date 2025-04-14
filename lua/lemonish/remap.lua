@@ -24,3 +24,5 @@ vim.keymap.set("n", "<leader>e", function()
         border = "rounded"
     })
 end, { desc = "Show diagnostic (focusable float)" })
+vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
+vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
