@@ -17,28 +17,30 @@ return {
     },
 
     config = function()
-        require("conform").setup({
-            formatters_by_ft = {
-            }
-        })
         local cmp = require('cmp')
         local cmp_lsp = require("cmp_nvim_lsp")
         local capabilities = vim.tbl_deep_extend(
             "force",
             {},
             vim.lsp.protocol.make_client_capabilities(),
-            cmp_lsp.default_capabilities())
+            cmp_lsp.default_capabilities()
+        )
 
         require("fidget").setup({})
 
         -- Auto format on save
         vim.api.nvim_create_autocmd("BufWritePre", {
-            callback = function()
-                vim.lsp.buf.format()
-            end
+            pattern = "*",
+            callback = function(args)
+                require("conform").format({ bufnr = args.buf })
+            end,
         })
 
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
+        local has_words_before = function()
+            local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+            return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+        end
 
         cmp.setup({
             snippet = {
@@ -46,28 +48,31 @@ return {
                     require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
                 end,
             },
+
             mapping = cmp.mapping.preset.insert({
-                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
                 ['<CR>'] = cmp.mapping.confirm({ select = true }),
-                ["<C-Space>"] = cmp.mapping.complete(),
-                ['<Tab>'] = cmp.mapping(function(fallback)
+                ["<Tab>"] = cmp.mapping(function()
                     if cmp.visible() then
                         cmp.select_next_item()
                     elseif require("luasnip").expand_or_jumpable() then
                         require("luasnip").expand_or_jump()
+                    elseif has_words_before() then
+                        cmp.complete()
                     else
-                        fallback()  -- Default tab behavior
+                        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", true)
                     end
-                end, { "i", "s" }), -- Works in insert and select mode
-                ['<S-Tab>'] = cmp.mapping(function(fallback)
+                end, { "i", "s" }),
+                ["<S-Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         cmp.select_prev_item()
+                    elseif require("luasnip").jumpable(-1) then
+                        require("luasnip").jump(-1)
                     else
-                        fallback()  -- Default tab behavior
+                        fallback()
                     end
-                end, { "i", "s" }), -- Works in insert and select mode
+                end, { "i", "s" }),
             }),
+
             sources = cmp.config.sources({
                 { name = "copilot", group_index = 2 },
                 { name = 'nvim_lsp' },
@@ -108,21 +113,6 @@ return {
                     }
                 end,
 
-                zls = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.zls.setup({
-                        root_dir = lspconfig.util.root_pattern(".git", "build.zig", "zls.json"),
-                        settings = {
-                            zls = {
-                                enable_inlay_hints = true,
-                                enable_snippets = true,
-                                warn_style = true,
-                            },
-                        },
-                    })
-                    vim.g.zig_fmt_parse_errors = 0
-                    vim.g.zig_fmt_autosave = 0
-                end,
                 ["lua_ls"] = function()
                     local lspconfig = require("lspconfig")
                     lspconfig.lua_ls.setup {
@@ -137,18 +127,21 @@ return {
                         }
                     }
                 end,
+
                 ["terraformls"] = function()
                     local lspconfig = require("lspconfig")
                     lspconfig.terraformls.setup({
                         capabilities = capabilities,
                     })
                 end,
+
                 ["ruby_lsp"] = function()
                     local lspconfig = require("lspconfig")
                     lspconfig.ruby_lsp.setup({
                         capabilities = capabilities,
                     })
                 end,
+
                 -- Java LSP setup
                 ["jdtls"] = function()
                     local lspconfig = require("lspconfig")
@@ -200,7 +193,20 @@ return {
                         }
                     })
                 end,
-            }
+
+            },
+            require("conform").setup({
+                formatters_by_ft = {
+                    lua        = { "stylua" },
+                    python     = { "black" },
+                    javascript = { "prettier" },
+                    typescript = { "prettier" },
+                    html       = { "prettier" },
+                    terraform  = { "terraform_fmt" },
+                    ruby       = { "rubocop" },
+                    go         = { "gofmt" },
+                },
+            })
         })
     end
 }
