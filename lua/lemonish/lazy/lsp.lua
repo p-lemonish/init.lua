@@ -95,6 +95,7 @@ return {
             ensure_installed = {
                 "ruby_lsp", -- must do apt install gem and apt install ruby-dev, then do gem install ruby-lsp.
                 "lua_ls",
+                "terraformls",
                 "ts_ls",
                 "html",
                 "pyright",
@@ -135,6 +136,12 @@ return {
                             }
                         }
                     }
+                end,
+                ["terraformls"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.terraformls.setup({
+                        capabilities = capabilities,
+                    })
                 end,
                 ["ruby_lsp"] = function()
                     local lspconfig = require("lspconfig")
