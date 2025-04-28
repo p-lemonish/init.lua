@@ -200,6 +200,8 @@ return {
                     lua        = { "stylua" },
                     python     = { "black" },
                     javascript = { "prettier" },
+                    javascriptreact = { "prettier" },
+                    typescriptreact = { "prettier" },
                     typescript = { "prettier" },
                     html       = { "prettier" },
                     terraform  = { "terraform_fmt" },
