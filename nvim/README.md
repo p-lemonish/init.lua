@@ -10,5 +10,7 @@ so the directory hierarchy had to be changed slightly, more info on this at http
 - Version control: [lazygit.nvim](https://github.com/kdheepak/lazygit.nvim)
 - Highlighting: [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - QoL for repetitive edits in many files: [Harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2)
-- Colorscheme: [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)
+- Colorscheme: 
+    - [tokyonight.nvim](https://github.com/folke/tokyonight.nvim)
+    - [catppuccin.nvim](https://github.com/catppuccin/nvim)
 - Surround selections: [nvim-surround](https://github.com/kylechui/nvim-surround)
