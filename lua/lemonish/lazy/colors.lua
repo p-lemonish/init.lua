@@ -1,20 +1,43 @@
-function ColorMyPencils(color)
-    color = color or "tokyonight-night"
-    vim.cmd.colorscheme(color)
-
-    -- Uncomment if you'd like to have a background image
-    -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-    -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-end
-
 return {
-    {
-        "folke/tokyonight.nvim",
-        lazy = false,
-        priority = 1000,
-        opts = {},
-        config = function()
-            ColorMyPencils()
-        end
-    },
+  {
+    "catppuccin/nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+    config = function()
+      require("catppuccin").setup({
+        color_overrides = {
+          mocha = {
+            rosewater = "#ea6962",
+            flamingo = "#ea6962",
+            red = "#ea6962",
+            maroon = "#ea6962",
+            pink = "#d3869b",
+            mauve = "#d3869b",
+            peach = "#e78a4e",
+            yellow = "#d8a657",
+            green = "#a9b665",
+            teal = "#89b482",
+            sky = "#89b482",
+            sapphire = "#89b482",
+            blue = "#7daea3",
+            lavender = "#7daea3",
+            text = "#ebdbb2",
+            subtext1 = "#d5c4a1",
+            subtext0 = "#bdae93",
+            overlay2 = "#a89984",
+            overlay1 = "#928374",
+            overlay0 = "#595959",
+            surface2 = "#4d4d4d",
+            surface1 = "#404040",
+            surface0 = "#292929",
+            base = "#1d2021",
+            mantle = "#191b1c",
+            crust = "#141617",
+          },
+        }
+      })
+      vim.cmd.colorscheme("catppuccin")
+    end,
+  },
 }
