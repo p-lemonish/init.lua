@@ -10,7 +10,7 @@ be cloned.
 git clone https://github.com/tmux-plugins/tpm ~/dotfiles/tmux/plugins/tpm
 ```
 
-I've downloaded the tmux-sessionizer -script from ThePrimeagen from (here)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer]
+I've downloaded the tmux-sessionizer -script from ThePrimeagen from [here](https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer)
 and edited the directory structure and find depth to a way that suits me 
 and my environment best currently. 
 
