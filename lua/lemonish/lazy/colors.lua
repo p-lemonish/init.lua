@@ -31,9 +31,12 @@ return {
             surface2 = "#4d4d4d",
             surface1 = "#404040",
             surface0 = "#292929",
-            base = "#1d2021",
-            mantle = "#191b1c",
-            crust = "#141617",
+            -- base = "#1d2021",
+            -- mantle = "#191b1c",
+            -- crust = "#141617",
+            base = "#000000",
+            mantle = "#000000",
+            crust = "#000000",
           },
         }
       })
