@@ -5,6 +5,7 @@ if [[ $# -eq 1 ]]; then
 else
     selected=$(find \
       ~/dotfiles \
+      /srv \
       ~/Documents \
       ~/Documents/project/wip \
       ~/Documents/project/abandoned \
