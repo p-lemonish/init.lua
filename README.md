@@ -25,5 +25,7 @@ ln -s ~/dotfiles/tmux   ~/.config/tmux
 ln -sf ~/dotfiles/bin/tmux-sessionizer ~/.local/bin/tmux-sessionizer
 ```
 
+Open tmux and run `<C-a> I` to install plugins.
+
 And that's it! Fastest way to find out if everything works is to open up tmux and nvim 
 and do C-f and see if it works by bringing up the find menu with tmux-sessionizer.
